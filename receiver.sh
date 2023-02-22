@@ -1,13 +1,9 @@
 #!/bin/bash
 
-# Check if the connection.cfg file exists
-if [ ! -f connection.cfg ]; then
-    # If the file doesn't exist, create it with the default IP address of localhost
-    echo "IP_ADDRESS=localhost" > connection.cfg
-fi
+receiver_ip=$(hostname -I)
 
 # Generate a self-signed certificate and key for SSL/TLS encryption
-openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem -subj "/C=DE/ST=Berlin/L=Berlin/O=UnixExporter/OU=UnixExporter/CN=192.168.229.102"
+openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem -subj /C=DE/ST=Berlin/L=Berlin/O=UnixExporter/OU=UnixExporter/CN=$receiver_ip" -addext "subjectAltName = IP:$receiver_ip
 
 # Read the IP address of the sender from the connection.cfg file
 source connection.cfg
