@@ -5,10 +5,12 @@ EXPORTER_DIR="/etc/unixExporter"
 
 # Define usage function
 function usage {
+  echo ""
   echo "Usage: $0 [-installType client|server] [-help]"
+  echo ""
   echo "Options:"
-  echo "  -installType  Install either the client or server script"
-  echo "  -help         Display this help message"
+  echo "  -installType [client|server]    | Install either the client or server script"
+  echo "  -help                           | Display this help message"
   exit 1
 }
 
@@ -37,24 +39,20 @@ fi
 
 # Set the name and URL of the script to install
 SCRIPT_NAME="receiver.sh"
-SCRIPT_URL="https://raw.githubusercontent.com/username/repo/main/receiver.sh"
+SCRIPT_URL="https://raw.githubusercontent.com/wafi87/unixExporter/main/receiver.sh"
 if [[ "$INSTALL_TYPE" == "client" ]]; then
   SCRIPT_NAME="sender.sh"
-  SCRIPT_URL="https://raw.githubusercontent.com/username/repo/main/sender.sh"
+  SCRIPT_URL="https://raw.githubusercontent.com/wafi87/unixExporter/main/sender.sh"
 fi
 
+# Create the Unix exporter directory if it doesn't exist
+sudo mkdir -p "$EXPORTER_DIR"
+
 # Download the script to the Unix exporter directory
-sudo curl -o "$EXPORTER_DIR/$SCRIPT_NAME" "$SCRIPT_URL"
+sudo wget -O "$EXPORTER_DIR/$SCRIPT_NAME" "$SCRIPT_URL"
 
 # Set the executable flag on the script
 sudo chmod +x "$EXPORTER_DIR/$SCRIPT_NAME"
 
-# Modify the script with the certificate details
-sudo sed -i "s/COUNTRY_NAME/$CERT_C/g" "$EXPORTER_DIR/$SCRIPT_NAME"
-sudo sed -i "s/STATE_NAME/$CERT_ST/g" "$EXPORTER_DIR/$SCRIPT_NAME"
-sudo sed -i "s/LOCALITY_NAME/$CERT_L/g" "$EXPORTER_DIR/$SCRIPT_NAME"
-sudo sed -i "s/ORGANIZATION_NAME/$CERT_O/g" "$EXPORTER_DIR/$SCRIPT_NAME"
-sudo sed -i "s/ORGANIZATIONAL_UNIT_NAME/$CERT_OU/g" "$EXPORTER_DIR/$SCRIPT_NAME"
-
-# Inform the user that the installation was successful
-echo "Installation of $SCRIPT_NAME completed successfully."
+# Start the script
+"$EXPORTER_DIR/$SCRIPT_NAME"
