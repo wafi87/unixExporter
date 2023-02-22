@@ -32,10 +32,12 @@ while true; do
     fi
 
     # Wait for an incoming connection on port 6601
+    echo "Waiting for incoming data..."
     openssl s_server -accept 6601 -cert cert.pem -key key.pem | while true; do
         # Save the incoming data to an XML file with a unique filename
         filename=$(date +%Y%m%d%H%M%S).xml
         cat > $filename
+        echo "Received $filename"
 
         # Wait for the specified interval before accepting another connection
         sleep $INTERVAL
