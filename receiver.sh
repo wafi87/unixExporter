@@ -6,8 +6,8 @@ openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem -subj "/C=
 
 # Check if the connection.cfg file exists
 if [ ! -f connection.cfg ]; then
-    echo "Error: connection.cfg file not found"
-    exit 1
+    # If the file doesn't exist, create it with the default IP address of localhost
+    echo "IP_ADDRESS=localhost" > connection.cfg
 fi
 
 # Read the IP address of the sender from the connection.cfg file
