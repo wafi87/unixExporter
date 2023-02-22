@@ -36,8 +36,15 @@ while true; do
     openssl s_server -accept 6601 -cert cert.pem -key key.pem | while true; do
         # Save the incoming data to an XML file with a unique filename
         filename=$(date +%Y%m%d%H%M%S).xml
-        cat > $filename
-        echo "Received $filename"
+        sed '/<\/xml>/q' > $filename
+
+        # Validate the XML data before writing it to disk
+        if xmllint --noout $filename; then
+            echo "Received $filename"
+        else
+            echo "Error: Invalid XML received"
+            rm $filename
+        fi
 
         # Wait for the specified interval before accepting another connection
         sleep $INTERVAL
